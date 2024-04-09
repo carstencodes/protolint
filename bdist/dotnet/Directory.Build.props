@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <ProtolintGoReleaserDistDir>$(MsBuildThisFileDirectory)/../../dist/</ProtolintGoReleaserDistDir>
+  </PropertyGroup>
+</Project>

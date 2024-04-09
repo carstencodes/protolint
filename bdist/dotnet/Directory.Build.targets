@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);SetVersionFromGitTag</GenerateNuspecDependsOn>
+  </PropertyGroup>
+
+  <Target Name="SetVersionFromGitTag">
+    <Exec Command="git describe --tags" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_Version" />
+    </Exec>
+    <PropertyGroup>
+        <PackageVersion>$(_Version.Trim('v').Split('-')[0])</PackageVersion>
+    </PropertyGroup>
+  </Target>
+</Project>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DotNetCliTool Version="1">
+    <Commands>
+        <Command Name="dotnet-protolint" EntryPoint="dotnet-protolint.exe" Runner="native" />
+        <Command Name="protoc-gen-protolint" EntryPoint="protoc-gen-protolint.exe" Runner="native" />
+    </Commands>
+</DotNetCliTool>

@@ -1,0 +1,2 @@
+# Protolint (global tool)
+

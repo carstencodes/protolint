@@ -1,0 +1,129 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.7.56">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <DefaultProjectTypeGuid>{2F08BC15-189B-4804-B644-653F34C968A8}</DefaultProjectTypeGuid>
+        <GenerateNuspecDependsOn>_WarnToolNotPossibleYet;$(GenerateNuspecDependsOn);_RenameOutputFiles</GenerateNuspecDependsOn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>yoheimuta.protolint.globaltool</PackageId>
+        <PackageVersion></PackageVersion>
+        <Authors>yoheimuta; carstencodes</Authors>
+        <Title>Protolint Global Tool</Title>
+        <Description>A pluggable linter and fixer to enforce Protocol Buffer style and conventions.</Description>
+        <Copyright>Copyright (c) 2018 yohei yoshimuta</Copyright>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <!--<PackageLicenseFile>$(MsBuildThisFileDirectory)../../../LICENSE</PackageLicenseFile>-->
+        <PackageProjectUrl>https://github.com/yoheimuta/protolint</PackageProjectUrl>
+        <PackageReadmeFile>ReadMe.md</PackageReadmeFile>
+        <PackageTags>protolint;protocol-buffers;protobuf;linter</PackageTags>
+        <PackageType>DotnetTool</PackageType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IsTool>true</IsTool>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.9.1">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None
+            Include="ReadMe.md"
+            Pack="true"
+            PackagePath="" />
+        <None
+            Include="_._"
+            Pack="true"
+            PackagePath="lib/netstandard2.0" />
+        <None
+            Include="posix/DotnetToolSettings.xml"
+            Pack="true"
+            PackagePath="tools/osx-x64/;tools/osx-arm64/;tools/linux-x64/;tools/linux-arm/;tools/linux-arm64/" />
+        <None
+            Include="windows/DotnetToolSettings.xml"
+            Pack="true"
+            PackagePath="tools/win-x64/;tools/win-arm64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protolint_darwin_amd64_v1/dotnet-protolint"
+            Pack="true"
+            PackagePath="tools/osx-x64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protoc-gen-protolint_darwin_amd64_v1/protoc-gen-protolint"
+            Pack="true"
+            PackagePath="tools/osx-x64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protolint_darwin_arm64/dotnet-protolint"
+            Pack="true"
+            PackagePath="tools/osx-arm64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protoc-gen-protolint_darwin_arm64/protoc-gen-protolint"
+            Pack="true"
+            PackagePath="tools/osx-arm64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protolint_linux_amd64_v1/dotnet-protolint"
+            Pack="true"
+            PackagePath="tools/linux-x64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protoc-gen-protolint_linux_amd64_v1/protoc-gen-protolint"
+            Pack="true"
+            PackagePath="tools/linux-x64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protolint_linux_arm_7/dotnet-protolint"
+            Pack="true"
+            PackagePath="tools/linux-arm/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protoc-gen-protolint_linux_arm_7/protoc-gen-protolint"
+            Pack="true"
+            PackagePath="tools/linux-arm/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protolint_linux_arm64/dotnet-protolint"
+            Pack="true"
+            PackagePath="tools/linux-arm64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protoc-gen-protolint_linux_arm64/protoc-gen-protolint"
+            Pack="true"
+            PackagePath="tools/linux-arm64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protolint_windows_amd64_v1/dotnet-protolint.exe"
+            Pack="true"
+            PackagePath="tools/win-x64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protoc-gen-protolint_windows_amd64_v1/protoc-gen-protolint.exe"
+            Pack="true"
+            PackagePath="tools/win-x64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protolint_windows_arm64/dotnet-protolint.exe"
+            Pack="true"
+            PackagePath="tools/win-arm64/" />
+        <None
+            Include="$(ProtolintGoReleaserDistDir)protoc-gen-protolint_windows_arm64/protoc-gen-protolint.exe"
+            Pack="true"
+            PackagePath="tools/win-arm64/" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <_FilesToRename Include="$(ProtolintGoReleaserDistDir)/protolint*/protolint" />
+        <_FilesToRename Include="$(ProtolintGoReleaserDistDir)/protolint*/protolint.exe" />
+    </ItemGroup>
+
+    <Target Name="_RenameOutputFiles"
+            Inputs="@(_FilesToRename)"
+            Outputs="@(_FilesToRename->'%(Directory)dotnet-%(FileName)%(Extension)')">
+        <Copy SourceFiles="%(_FilesToRename.Identity)"
+              DestinationFiles="$(ProtolintGoReleaserDistDir)/%(_FilesToRename.RecursiveDir)dotnet-%(_FilesToRename.FileName)%(_FilesToRename.Extension)"
+              SkipUnchangedFiles="true" />
+    </Target>
+
+    <Target Name="_WarnToolNotPossibleYet">
+        <Warning Text="The global tool cannot be build using native packaging yet. Refer to https://github.com/dotnet/sdk/issues/9503 for detail." />
+    </Target>
+
+</Project>
