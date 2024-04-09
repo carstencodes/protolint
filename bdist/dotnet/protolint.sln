@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2F08BC15-189B-4804-B644-653F34C968A8}") = "protolint-global-tool", "global-tool\protolint-global-tool.msbuildproj", "{9F709A95-B632-4507-83CC-5750BBF2C9CC}"
 EndProject
+Project("{2F08BC15-189B-4804-B644-653F34C968A8}") = "protolint-ProtocGenPlugin", "ProtocGenPlugin\protolint-ProtocGenPlugin.msbuildproj", "{AFCA57D8-4725-46B2-A574-9A51009F0DE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +17,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9F709A95-B632-4507-83CC-5750BBF2C9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F709A95-B632-4507-83CC-5750BBF2C9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F709A95-B632-4507-83CC-5750BBF2C9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F709A95-B632-4507-83CC-5750BBF2C9CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFCA57D8-4725-46B2-A574-9A51009F0DE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFCA57D8-4725-46B2-A574-9A51009F0DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFCA57D8-4725-46B2-A574-9A51009F0DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFCA57D8-4725-46B2-A574-9A51009F0DE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

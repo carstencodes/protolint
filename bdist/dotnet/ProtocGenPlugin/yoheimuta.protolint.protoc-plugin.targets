@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <_SystemPlatform>$( [System.Environment]::OSVersion.PlatformId )</_SystemPlatform>
+    <_SystemPlatform>$(_SystemPlatform.ToLowerInvariant())</_SystemPlatform>
+    <_SystemArchitecture>$( [System.Runtime.InteropServices]::Architecture )<_SystemArchitecture>
+    <ProtocGenProtolintToolPath>$( [System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)../tools) )</ProtocGenProtolintToolPath>
+    <ProtocGenProtolintOs Condition="'$(ProtocGenProtolintOs)' == '' AND '$( _SystemPlatform.StartsWith('win') )'">win</ProtocGenProtolintOs>
+    <ProtocGenProtolintOs Condition="'$(ProtocGenProtolintOs)' == '' AND '$( _SystemPlatform.StartsWith('unix') )'">linux</ProtocGenProtolintOs>
+    <ProtocGenProtolintOs Condition="'$(ProtocGenProtolintOs)' == ''">$(_SystemPlatform)</ProtocGenProtolintOs>
+    <ProtocGenProtolintCpuArch>$( _SystemArchitecture.ToLowerInvariant() )</ProtocGenProtolintCpuArch>
+    <ProtocGenProtolintRid>$(ProtocGenProtolintOs)-$(ProtocGenProtolintCpuArch)</ProtocGenProtolintRid>
+    <ProtocGenProtolintExtension Condition="'$(ProtocGenProtolintOs)' == 'win'">.exe</ProtocGenProtolintExtension>
+    <ProtocGenProtolintExecutableName>protoc-gen-protolint</ProtocGenProtolintExecutableName>
+    <ProtocGenProtolintExecutuableFileDir>$(ProtocGenProtolintToolPath)$(ProtocGenProtolintRid)/</ProtocGenProtolintExecutuableFileDir>
+    <ProtocGenProtolintExecutable>$(ProtocGenProtolintExecutuableFileDir)$(ProtocGenProtolintExecutableName)$(ProtocGenProtolintExtension)</ProtocGenProtolintExecutable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ProtocGenProtolintEffectiveOptions Condition="'$(ProtocGenProtolintOptions)' != ''">,$(ProtocGenProtolintOptions)</ProtocGenProtolintEffectiveOptions>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(ProtocGenProtolintExecutable)')">
+    <ProtoBuf Update="@(Protobuf->WithMetadata('ProtoRoot',''))">
+        <AdditionalProtocArguments>--protolint_out=.;--protolint_opt=proto_root=$([System.IO.Path]::GetFullPath(%(RelativeDir))$(ProtocGenProtolintEffectiveOptions)</AdditionalProtocArguments>
+        <AdditionalProtocArguments Condition=" '$(Protobuf_ProtoRoot)' != '' ">--protolint_out=.;--protolint_opt=proto_root=$(Protobuf_ProtoRoot)$(ProtocGenProtolintEffectiveOptions)</AdditionalProtocArguments>
+    </ProtoBuf>
+    <ProtoBuf Update="@(Protobuf->HasMetadata('ProtoRoot'))">
+        <AdditionalProtocArguments>--protolint_out=.;--protolint_opt=proto_root=%(ProtoRoot)$(ProtocGenProtolintEffectiveOptions)</AdditionalProtocArguments>
+    </ProtoBuf>
+  </ItemGroup>
+
+  <Target
+        Name="ProtocGenProtolintVerifyToolExists"
+        BeforeTargets="Protobuf_PrepareCompile"
+        Condition="'@(Protobuf)' != ''">
+    <Error
+        Text="Cannot locate protoc-gen-protolint executable file at '$(ProtocGenProtolintExecutable)'"
+        Condition="!Exists('$(ProtocGenProtolintExecutable)')"/>
+  </Target>
+
+  <Target
+        Name="ProtocGenProtolintUpdatePath"
+        BeforeTargets="Protobuf_BeforeCompile"
+        Condition="'@(Protobuf)' != ''">
+    <PropertyGroup>
+        <_SystemPath>$( [System.Environment.GetEnvironmentVariable('PATH')] )</_SystemPath>
+        <_NewSystemPath>$(_SystemPath);$(ProtocGenProtolintExecutuableFileDir)</_NewSystemPath>
+    </PropertyGroup>
+
+    <UpdatePathToProtocGenExecutable Value="$(_NewSystemPath)" />
+  </Target>
+
+  <UsingTask
+    TaskName="UpdatePathToProtocGenExecutable"
+    TaskFactory="RoslynCodeTaskFactory"
+    AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" >
+
+    <ParameterGroup>
+      <Value ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+
+    <Task>
+      <Using Namespace="System" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          Environment.SetEnvironmentVariable("PATH", Value);
+        ]]>
+      </Code>
+    </Task>
+
+  </UsingTask>
+</Project>
